@@ -28,7 +28,7 @@ func resourceHardwareCreate(d *schema.ResourceData, m interface{}) error {
 	c := m.(*TinkClient).HardwareClient
 
 	req := hardware.PushRequest{
-        Data: d.Get("data").(string),
+        Data: d.Get("data").(*hardware.Hardware),
 	}
 
 	_ , err := c.Push(context.Background(), &req)
@@ -43,7 +43,7 @@ func resourceHardwareRead(d *schema.ResourceData, m interface{}) error {
 	c := m.(*TinkClient).HardwareClient
 
 	req := hardware.GetRequest{
-        ID: d.Id(),
+        Id: d.Id(),
 	}
 
 	_, err := c.ByID(context.Background(), &req)
@@ -55,15 +55,15 @@ func resourceHardwareRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceHardwareDelete(d *schema.ResourceData, m interface{}) error {
-	//c := m.(*TinkClient).HardwareClient
-    //
-	//req := hardware.DeleteRequest{
-	//	Id: d.Id(),
-	//}
+	c := m.(*TinkClient).HardwareClient
 
-	//if _, err := c.Delete(context.Background(), &req); err != nil {
-	//	return fmt.Errorf("removing hardware failed: %w", err)
-	//}
+	req := hardware.DeleteRequest{
+		Id: d.Id(),
+	}
+
+	if _, err := c.Delete(context.Background(), &req); err != nil {
+		return fmt.Errorf("removing hardware failed: %w", err)
+	}
 
 	return nil
 }
